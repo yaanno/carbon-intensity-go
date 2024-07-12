@@ -43,17 +43,19 @@ type IntensityByIntervalResponse struct {
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional
 type IntensityByAllRegionsResponse struct {
-	DateTime
-	Regions []RegionWithGenerationAndIntensity `json:"regions"`
+	Data []struct {
+		DateTime
+		Regions []RegionWithGenerationAndIntensity `json:"regions"`
+	} `json:"data"`
 }
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional-england
 type IntensityByMainRegionResponse struct {
 	Data []struct {
 		Region
-		DateTime
 		Data []struct {
-			RegionWithGenerationAndIntensity
+			DateTime
+			GenerationAndIntensity
 		} `json:"data"`
 	} `json:"data"`
 }
@@ -104,6 +106,12 @@ type ResponseError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
 }
+
+type GenerationAndIntensity struct {
+	Generationmix []Generationmix `json:"generationmix"`
+	Intensity     Intensity
+}
+
 type RegionWithGenerationAndIntensity struct {
 	Region
 	Generationmix []Generationmix `json:"generationmix"`
@@ -150,7 +158,7 @@ type Region struct {
 const api = "https://api.carbonintensity.org.uk"
 
 func main() {
-	api := api + "/intensity"
+	api := api + "/regional/england"
 	request, err := http.NewRequest("GET", api, nil)
 	if err != nil {
 		fmt.Println("Error: ", err)
@@ -160,7 +168,6 @@ func main() {
 	request.Header.Set("Content-Type", "application/json")
 	client := &http.Client{}
 	response, err := client.Do(request)
-	fmt.Println(response.StatusCode)
 	if err != nil {
 		fmt.Println("Error: ", err)
 		return
@@ -168,12 +175,13 @@ func main() {
 
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
+	fmt.Println(string(body))
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 
-	var recent IntensityRecentResponse
+	var recent IntensityByMainRegionResponse
 
 	err = json.Unmarshal(body, &recent)
 
@@ -182,5 +190,5 @@ func main() {
 		return
 	}
 
-	fmt.Println("Response Body:", recent.Data)
+	fmt.Println("Response Body:", recent.Data[0].Data[0].Intensity)
 }
