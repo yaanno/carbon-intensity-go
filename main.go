@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/xeipuuv/gojsonschema"
 )
 
 // Response types
@@ -154,6 +156,21 @@ func main() {
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println("Error:", err)
+		return
+	}
+
+	schema := gojsonschema.NewReferenceLoader("file://./scheme/intensity.json")
+	doc := gojsonschema.NewStringLoader(string(body))
+	result, err := gojsonschema.Validate(schema, doc)
+	if err != nil {
+		fmt.Println("Validator error: ", err)
+		return
+	}
+	if !result.Valid() {
+		fmt.Printf("The document is not valid. see errors :\n")
+		for _, desc := range result.Errors() {
+			fmt.Printf("- %s\n", desc)
+		}
 		return
 	}
 
