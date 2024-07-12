@@ -18,28 +18,13 @@ type IntensityFactorsResponse struct {
 }
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-intensity
-type IntensityRecentResponse struct {
-	Data []struct {
-		DateTime
-		Intensity `json:"intensity"`
-	} `json:"data"`
-}
+type IntensityRecentResponse = IntensityWithDate
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-intensity-date
-type IntensityTodayResponse struct {
-	Data []struct {
-		DateTime
-		Intensity `json:"intensity"`
-	} `json:"data"`
-}
+type IntensityTodayResponse = IntensityWithDate
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-intensity-stats-from-to
-type IntensityByIntervalResponse struct {
-	Data []struct {
-		DateTime
-		Intensity `json:"intensity"`
-	} `json:"data"`
-}
+type IntensityByIntervalResponse = IntensityWithDate
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional
 type IntensityByAllRegionsResponse struct {
@@ -61,36 +46,12 @@ type IntensityByMainRegionResponse struct {
 }
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional-regionid-regionid
-type IntensityByRegionIdResponse struct {
-	Data []struct {
-		Region
-		Data []struct {
-			DateTime
-			RegionWithGenerationAndIntensity
-		} `json:"data"`
-	} `json:"data"`
-}
+type IntensityByRegionIdResponse = IntensityWithDateAndRegionWithGenerationAndIntensity
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional-postcode-postcode
-type IntensityByRegionPostCodeResponse struct {
-	Data []struct {
-		Region
-		Data []struct {
-			DateTime
-			RegionWithGenerationAndIntensity
-		} `json:"data"`
-	} `json:"data"`
-}
+type IntensityByRegionPostCodeResponse = IntensityWithDateAndRegionWithGenerationAndIntensity
 
-type IntensityByDatetimeAndRegionResponse struct {
-	Data []struct {
-		Region
-		Data []struct {
-			DateTime
-			RegionWithGenerationAndIntensity
-		} `json:"data"`
-	} `json:"data"`
-}
+type IntensityByDatetimeAndRegionResponse = IntensityWithDateAndRegionWithGenerationAndIntensity
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-generation
 type GenetrationMixRecentResponse struct {
@@ -121,6 +82,20 @@ type DateTime struct {
 	From string `json:"from"`
 	To   string `json:"to"`
 }
+type IntensityWithDate struct {
+	Data []struct {
+		DateTime
+		Intensity `json:"intensity"`
+	} `json:"data"`
+}
+type IntensityWithDateAndRegionWithGenerationAndIntensity struct {
+	Data []struct {
+		DateTime
+		Intensity `json:"intensity"`
+	} `json:"data"`
+}
+
+// https://carbon-intensity.github.io/api-definitions/?shell#factors
 type Factor struct {
 	Biomass          int `json:"Biomass"`
 	Coal             int `json:"Coal"`
@@ -137,12 +112,15 @@ type Factor struct {
 	Solar            int `json:"Solar"`
 	Wind             int `json:"Wind"`
 }
+
+// https://carbon-intensity.github.io/api-definitions/?shell#intensity-1
 type Intensity struct {
 	Forecast int    `json:"forecast"`
+	Actual   int    `json:"actual"`
+	Index    string `json:"index"`
 	Max      int    `json:"max"`
 	Average  int    `json:"average"`
 	Min      int    `json:"min"`
-	Index    string `json:"index"`
 }
 type Generationmix struct {
 	Fuel string  `json:"fuel"`
@@ -158,7 +136,7 @@ type Region struct {
 const api = "https://api.carbonintensity.org.uk"
 
 func main() {
-	api := api + "/regional/england"
+	api := api + "/intensity"
 	request, err := http.NewRequest("GET", api, nil)
 	if err != nil {
 		fmt.Println("Error: ", err)
@@ -172,17 +150,14 @@ func main() {
 		fmt.Println("Error: ", err)
 		return
 	}
-
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
-	fmt.Println(string(body))
 	if err != nil {
 		fmt.Println("Error:", err)
 		return
 	}
 
-	var recent IntensityByMainRegionResponse
-
+	recent := IntensityRecentResponse{}
 	err = json.Unmarshal(body, &recent)
 
 	if err != nil {
@@ -190,5 +165,5 @@ func main() {
 		return
 	}
 
-	fmt.Println("Response Body:", recent.Data[0].Data[0].Intensity)
+	fmt.Println("Response Body:", recent.Data)
 }
