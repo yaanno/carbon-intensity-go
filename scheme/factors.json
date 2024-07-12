@@ -1,0 +1,76 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Generated schema for Root",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "Biomass": {
+              "type": "number"
+            },
+            "Coal": {
+              "type": "number"
+            },
+            "Dutch Imports": {
+              "type": "number"
+            },
+            "French Imports": {
+              "type": "number"
+            },
+            "Gas (Combined Cycle)": {
+              "type": "number"
+            },
+            "Gas (Open Cycle)": {
+              "type": "number"
+            },
+            "Hydro": {
+              "type": "number"
+            },
+            "Irish Imports": {
+              "type": "number"
+            },
+            "Nuclear": {
+              "type": "number"
+            },
+            "Oil": {
+              "type": "number"
+            },
+            "Other": {
+              "type": "number"
+            },
+            "Pumped Storage": {
+              "type": "number"
+            },
+            "Solar": {
+              "type": "number"
+            },
+            "Wind": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "Biomass",
+            "Coal",
+            "Dutch Imports",
+            "French Imports",
+            "Gas (Combined Cycle)",
+            "Gas (Open Cycle)",
+            "Hydro",
+            "Irish Imports",
+            "Nuclear",
+            "Oil",
+            "Other",
+            "Pumped Storage",
+            "Solar",
+            "Wind"
+          ]
+        }
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
