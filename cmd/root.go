@@ -3,8 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strings"
-	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -86,24 +84,24 @@ func initConfig() {
 	}
 }
 
-var statsCmd = &cobra.Command{
-	Use:   "stats",
-	Short: "Get Carbon Intensity data",
-	Args:  cobra.ExactArgs(0),
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Echo: " + strings.Join(args, " "))
-	},
-}
+// var statsCmd = &cobra.Command{
+// 	Use:   "stats",
+// 	Short: "Get Carbon Intensity data",
+// 	Args:  cobra.ExactArgs(0),
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		fmt.Println("Echo: " + strings.Join(args, " "))
+// 	},
+// }
 
-var generationCmd = &cobra.Command{
-	Use:   "generation [now | today | past]",
-	Short: "Generation Mix for the GB power system",
-	ValidArgs: []string{
-		"now", "today", "past",
-	},
-	Args: cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Echo: " + strings.Join(args, time.Now().Format(time.RFC3339)))
-	},
-	Example: "generation past --window 24",
-}
+// var generationCmd = &cobra.Command{
+// 	Use:   "generation [now | today | past]",
+// 	Short: "Generation Mix for the GB power system",
+// 	ValidArgs: []string{
+// 		"now", "today", "past",
+// 	},
+// 	Args: cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+// 	Run: func(cmd *cobra.Command, args []string) {
+// 		fmt.Println("Echo: " + strings.Join(args, time.Now().Format(time.RFC3339)))
+// 	},
+// 	Example: "generation past --window 24",
+// }

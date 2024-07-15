@@ -30,7 +30,6 @@ func init() {
 	statisticsCmd.Flags().StringVar(&To, "end-date", "", "End date in YYYY-MM-DD format")
 	statisticsCmd.MarkFlagRequired("start-date")
 	statisticsCmd.MarkFlagRequired("end-date")
-	// statisticsCmd.MarkFlagsRequiredTogether("start-date", "end-date")
 
 	// Here you will define your flags and configuration settings.
 

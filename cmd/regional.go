@@ -21,7 +21,7 @@ var regionalCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
-			// fmt.Println("Get general data")
+			fmt.Println("Get general data")
 		}
 		var dateValid bool
 		if cmd.Flag("start-date").Changed {
@@ -38,7 +38,6 @@ var regionalCmd = &cobra.Command{
 				return
 			}
 		}
-		// fmt.Println(cmd.Flag("start-date").Changed)
 
 		flagsValues := map[string]any{
 			"id":         cmd.Flag("id").Value,
