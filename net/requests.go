@@ -1,14 +1,11 @@
 package net
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 
 	e "carbon-intensity/entities"
-
-	"github.com/xeipuuv/gojsonschema"
 )
 
 // Response types
@@ -67,52 +64,76 @@ type GenetrationMixRecentResponse struct {
 
 const api = "https://api.carbonintensity.org.uk/"
 
-func DoRequest(endpoint string, flags map[string]any) {
+var client = &http.Client{}
+
+func DoRequest(endpoint string) ([]byte, error) {
 	api := api + endpoint
 	request, err := http.NewRequest("GET", api, nil)
 	if err != nil {
-		fmt.Println("Error: ", err)
-		return
+		return nil, fmt.Errorf("%w", err)
 	}
 
 	request.Header.Set("Content-Type", "application/json")
-	client := &http.Client{}
+
 	response, err := client.Do(request)
 	if err != nil {
-		fmt.Println("Error: ", err)
-		return
+		return nil, fmt.Errorf("%w", err)
 	}
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
-		fmt.Println("Error:", err)
-		return
+		return nil, fmt.Errorf("%w", err)
 	}
 
-	refFile := fmt.Sprintf("file://./scheme/%v.json", endpoint)
+	return body, nil
 
-	schema := gojsonschema.NewReferenceLoader(refFile)
-	doc := gojsonschema.NewStringLoader(string(body))
-	result, err := gojsonschema.Validate(schema, doc)
-	if err != nil {
-		fmt.Println("Validator error: ", err)
-		return
+	// isValid := validateResponse(endpoint, body)
+
+	// if !isValid {
+	// 	return
+	// }
+
+	// recent := getResponseTypeByEndpoint(endpoint)
+	// var recent
+
+	// recent := []byte{}
+	// err = json.Unmarshal(body, &recent)
+
+	// if err != nil {
+	// 	fmt.Println("Error:", err)
+	// 	return
+	// }
+
+	// fmt.Println("Response Body:", recent)
+}
+
+// func validateResponse(endpoint string, body []byte) bool {
+// 	file := fmt.Sprintf("file://./scheme/%v.json", endpoint)
+// 	schema := gojsonschema.NewReferenceLoader(file)
+// 	doc := gojsonschema.NewStringLoader(string(body))
+// 	result, err := gojsonschema.Validate(schema, doc)
+// 	if err != nil {
+// 		fmt.Println("Validator error: ", err)
+// 		return false
+// 	}
+// 	if !result.Valid() {
+// 		fmt.Printf("The document is not valid. see errors :\n")
+// 		for _, desc := range result.Errors() {
+// 			fmt.Printf("- %s\n", desc)
+// 		}
+// 		return false
+// 	}
+// 	return true
+// }
+
+func GetEndpoint(endpoint string, args []string, flags map[string]any) string {
+	fmt.Println(args, flags)
+	if len(args) > 0 {
+		endpoint = fmt.Sprintf("%v/%v", endpoint, args[0])
+		return endpoint
 	}
-	if !result.Valid() {
-		fmt.Printf("The document is not valid. see errors :\n")
-		for _, desc := range result.Errors() {
-			fmt.Printf("- %s\n", desc)
-		}
-		return
+	if flags["id"] != "" {
+		endpoint = fmt.Sprintf("%v/regionid/%v", endpoint, flags["id"])
 	}
-
-	recent := IntensityByAllRegionsResponse{}
-	err = json.Unmarshal(body, &recent)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-
-	fmt.Println("Response Body:", recent)
+	return endpoint
 }

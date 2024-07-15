@@ -14,12 +14,18 @@ import (
 
 var cfgFile string
 var Verbose bool
+
+// Start date
 var From string
+
+// End date
 var To string
 var Next string
 var Past string
 var Postcode string
 var RegionId string
+
+// Turn forecast reporting on
 var Forecast bool
 
 var rootCmd = &cobra.Command{
@@ -41,11 +47,13 @@ func init() {
 
 	regionalCmd.PersistentFlags().StringVar(&From, "start-date", "", "Start date in YYYY-MM-DD format")
 	regionalCmd.PersistentFlags().StringVar(&To, "end-date", "", "End date in YYYY-MM-DD format")
-	regionalCmd.PersistentFlags().StringVar(&Next, "forecast", "24", "Forecast for the next hours for GB regions")
+	regionalCmd.PersistentFlags().StringVar(&Next, "next", "24", "Forecast for the next hours for GB regions")
+	regionalCmd.PersistentFlags().BoolVar(&Forecast, "forecast", false, "Forecast for the next hours for GB regions")
 	regionalCmd.PersistentFlags().StringVar(&Postcode, "postcode", "", "Data for a region specified by postcode")
 	regionalCmd.PersistentFlags().StringVar(&RegionId, "id", "", "Data for a region specified by region id")
 	regionalCmd.MarkFlagsRequiredTogether("start-date", "end-date")
-	generationCmd.PersistentFlags().StringVar(&Past, "window", "24", "Get generation mix for the previous specified hours")
+	regionalCmd.MarkFlagsRequiredTogether("forecast", "next")
+	// generationCmd.PersistentFlags().StringVar(&Past, "window", "24", "Get generation mix for the previous specified hours")
 	rootCmd.AddCommand(regionalCmd, statCmd, generationCmd)
 }
 
@@ -92,12 +100,14 @@ var regionalCmd = &cobra.Command{
 			"postcode":   Postcode,
 			"forecast":   Forecast,
 			"window":     Past,
+			"hours":      Next,
 		}
-		fmt.Println(flagsValues)
-
-		fmt.Println(cmd.Flags().FlagUsages())
-
-		r.DoRequest("regional", flagsValues)
+		resp, err := r.DoRequest(r.GetEndpoint("regional", args, flagsValues))
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(string(resp))
 	},
 	Example: "regional england --next 48",
 }
