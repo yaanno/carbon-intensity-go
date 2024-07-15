@@ -39,20 +39,26 @@ var regionalCmd = &cobra.Command{
 			}
 		}
 
-		flagsValues := map[string]any{
-			"id":         cmd.Flag("id").Value,
+		flagsValues := map[string]string{
+			"id":         cmd.Flag("id").Value.String(),
 			"start-date": cmd.Flag("start-date").Value.String(),
 			"end-date":   cmd.Flag("end-date").Value.String(),
-			"postcode":   cmd.Flag("postcode").Value,
-			"forecast":   cmd.Flag("forecast").Value,
-			"window":     cmd.Flag("next").Value,
+			"postcode":   cmd.Flag("postcode").Value.String(),
+			"forecast":   cmd.Flag("forecast").Value.String(),
+			"window":     cmd.Flag("next").Value.String(),
 		}
-		resp, err := r.DoRequest(r.GetEndpoint("regional", args, flagsValues))
+		endpoint := r.GetEndpoint("regional", args, flagsValues)
+		resp, err := r.DoRequest(endpoint)
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(string(resp))
+		// todo
+		// validate json
+		// marshal json if needed, otherwise save json response
+		// fmt.Println(string(resp))
+		valid := r.ValidateResponse(endpoint, resp)
+		fmt.Println(valid)
 	},
 	Example: "regional england --next 48",
 }

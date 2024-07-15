@@ -68,6 +68,7 @@ var client = &http.Client{}
 
 func DoRequest(endpoint string) ([]byte, error) {
 	api := api + endpoint
+	fmt.Println(api)
 	request, err := http.NewRequest("GET", api, nil)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
@@ -107,26 +108,7 @@ func DoRequest(endpoint string) ([]byte, error) {
 	// fmt.Println("Response Body:", recent)
 }
 
-// func validateResponse(endpoint string, body []byte) bool {
-// 	file := fmt.Sprintf("file://./scheme/%v.json", endpoint)
-// 	schema := gojsonschema.NewReferenceLoader(file)
-// 	doc := gojsonschema.NewStringLoader(string(body))
-// 	result, err := gojsonschema.Validate(schema, doc)
-// 	if err != nil {
-// 		fmt.Println("Validator error: ", err)
-// 		return false
-// 	}
-// 	if !result.Valid() {
-// 		fmt.Printf("The document is not valid. see errors :\n")
-// 		for _, desc := range result.Errors() {
-// 			fmt.Printf("- %s\n", desc)
-// 		}
-// 		return false
-// 	}
-// 	return true
-// }
-
-func GetEndpoint(endpoint string, args []string, flags map[string]any) string {
+func GetEndpoint(endpoint string, args []string, flags map[string]string) string {
 	fmt.Println(args, flags)
 	if len(args) > 0 {
 		endpoint = fmt.Sprintf("%v/%v", endpoint, args[0])
@@ -135,5 +117,6 @@ func GetEndpoint(endpoint string, args []string, flags map[string]any) string {
 	if flags["id"] != "" {
 		endpoint = fmt.Sprintf("%v/regionid/%v", endpoint, flags["id"])
 	}
+
 	return endpoint
 }
