@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	r "carbon-intensity/net"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -14,8 +16,11 @@ var cfgFile string
 var Verbose bool
 var From string
 var To string
-var Next int
+var Next string
 var Past string
+var Postcode string
+var RegionId string
+var Forecast bool
 
 var rootCmd = &cobra.Command{
 	Use:   "carbon-intensity",
@@ -33,18 +38,15 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	// regionCmd.PersistentFlags().StringVar(&From, "from", time.Now().Format(time.RFC3339), "Start datetime in YYYY-MM-DDThh:mmZ format")
-	// regionCmd.PersistentFlags().StringVar(&To, "to", "", "End datetime in in YYYY-MM-DDThh:mmZ format")
-	regionCmd.PersistentFlags().IntVar(&Next, "next", 24, "Get Carbon Intensity data for the next specified hours for GB regions")
+
+	regionalCmd.PersistentFlags().StringVar(&From, "start-date", "", "Start date in YYYY-MM-DD format")
+	regionalCmd.PersistentFlags().StringVar(&To, "end-date", "", "End date in YYYY-MM-DD format")
+	regionalCmd.PersistentFlags().StringVar(&Next, "forecast", "24", "Forecast for the next hours for GB regions")
+	regionalCmd.PersistentFlags().StringVar(&Postcode, "postcode", "", "Data for a region specified by postcode")
+	regionalCmd.PersistentFlags().StringVar(&RegionId, "id", "", "Data for a region specified by region id")
+	regionalCmd.MarkFlagsRequiredTogether("start-date", "end-date")
 	generationCmd.PersistentFlags().StringVar(&Past, "window", "24", "Get generation mix for the previous specified hours")
-
-	// rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "verbose output")
-	// rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.carbon-intensity.yaml)")
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.AddCommand(regionCmd, statCmd, generationCmd)
+	rootCmd.AddCommand(regionalCmd, statCmd, generationCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -71,17 +73,33 @@ func initConfig() {
 	}
 }
 
-var regionCmd = &cobra.Command{
-	Use:   "region [region]",
+var regionalCmd = &cobra.Command{
+	Use:   "regional [region]",
 	Short: "Regional Carbon Intensity data",
-	Args:  cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
+	Args:  cobra.OnlyValidArgs,
 	ValidArgs: []string{
-		"all", "england",
+		"scotland", "england", "wales",
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Echo: " + strings.Join(args, " "))
+		if len(args) == 0 {
+			fmt.Println("Get general data")
+		}
+
+		flagsValues := map[string]any{
+			"id":         RegionId,
+			"start-date": From,
+			"end-date":   To,
+			"postcode":   Postcode,
+			"forecast":   Forecast,
+			"window":     Past,
+		}
+		fmt.Println(flagsValues)
+
+		fmt.Println(cmd.Flags().FlagUsages())
+
+		r.DoRequest("regional", flagsValues)
 	},
-	Example: "region england --next 48",
+	Example: "regional england --next 48",
 }
 
 var statCmd = &cobra.Command{

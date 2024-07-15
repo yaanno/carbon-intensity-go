@@ -65,10 +65,10 @@ type GenetrationMixRecentResponse struct {
 	} `json:"data"`
 }
 
-const api = "https://api.carbonintensity.org.uk"
+const api = "https://api.carbonintensity.org.uk/"
 
-func main() {
-	api := api + "/intensity"
+func DoRequest(endpoint string, flags map[string]any) {
+	api := api + endpoint
 	request, err := http.NewRequest("GET", api, nil)
 	if err != nil {
 		fmt.Println("Error: ", err)
@@ -89,7 +89,9 @@ func main() {
 		return
 	}
 
-	schema := gojsonschema.NewReferenceLoader("file://./scheme/intensity.json")
+	refFile := fmt.Sprintf("file://./scheme/%v.json", endpoint)
+
+	schema := gojsonschema.NewReferenceLoader(refFile)
 	doc := gojsonschema.NewStringLoader(string(body))
 	result, err := gojsonschema.Validate(schema, doc)
 	if err != nil {
@@ -104,7 +106,7 @@ func main() {
 		return
 	}
 
-	recent := IntensityRecentResponse{}
+	recent := IntensityByAllRegionsResponse{}
 	err = json.Unmarshal(body, &recent)
 
 	if err != nil {
@@ -112,5 +114,5 @@ func main() {
 		return
 	}
 
-	fmt.Println("Response Body:", recent.Data)
+	fmt.Println("Response Body:", recent)
 }
