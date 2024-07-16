@@ -1,0 +1,6 @@
+{
+    "error": {
+        "code": "400 Bad Request",
+        "message": "The date range you have specified is greater than 31 days. Please select a smaller date range."
+    }
+}

@@ -4,6 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	r "carbon-intensity/net"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -13,14 +14,44 @@ import (
 var statisticsCmd = &cobra.Command{
 	Use:   "statistics",
 	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("statistics called")
+		var dateValid bool
+		if cmd.Flag("start-date").Changed {
+			dateValid = validateDate(cmd.Flag("start-date").Value.String())
+			if !dateValid {
+				fmt.Println(cmd.UsageString())
+				return
+			}
+		}
+		if cmd.Flag("start-date").Changed {
+			dateValid = validateDate(cmd.Flag("end-date").Value.String())
+			if !dateValid {
+				fmt.Println(cmd.UsageString())
+				return
+			}
+		}
+		flagsValues := map[string]string{
+			"start-date": cmd.Flag("start-date").Value.String(),
+			"end-date":   cmd.Flag("end-date").Value.String(),
+		}
+		request := r.NewIntensityIntervalRequest("intensity")
+		request.GetEndpoint(args, flagsValues)
+		result, err := request.Get()
+		if err != nil {
+			fmt.Println("Error:")
+			fmt.Println(err)
+			return
+		}
+		valid := request.Validate(result)
+		if !valid {
+			return
+		}
+		err = request.UnMarshal(result)
+		if err != nil {
+			return
+		}
+		fmt.Println(request.Response.Data)
 	},
 }
 
