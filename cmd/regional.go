@@ -47,18 +47,23 @@ var regionalCmd = &cobra.Command{
 			"forecast":   cmd.Flag("forecast").Value.String(),
 			"window":     cmd.Flag("next").Value.String(),
 		}
-		endpoint := r.GetEndpoint("regional", args, flagsValues)
-		resp, err := r.DoRequest(endpoint)
+
+		request := r.NewIntensityAllRegionsRequest("regional")
+		request.GetEndpoint(args, flagsValues)
+		result, err := request.Get()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		// todo
-		// validate json
-		// marshal json if needed, otherwise save json response
-		// fmt.Println(string(resp))
-		valid := r.ValidateResponse(endpoint, resp)
-		fmt.Println(valid)
+		valid := request.Validate(result)
+		if !valid {
+			return
+		}
+		err = request.UnMarshal(result)
+		if err != nil {
+			return
+		}
+		fmt.Println(request.Response.Data)
 	},
 	Example: "regional england --next 48",
 }

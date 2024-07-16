@@ -8,7 +8,6 @@ import (
 
 func ValidateResponse(endpoint string, body []byte) bool {
 	file := fmt.Sprintf("file://./scheme/%v.json", endpoint)
-	fmt.Println(file)
 	schema := gojsonschema.NewReferenceLoader(file)
 	doc := gojsonschema.NewStringLoader(string(body))
 	result, err := gojsonschema.Validate(schema, doc)

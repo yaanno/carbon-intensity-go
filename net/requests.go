@@ -1,6 +1,7 @@
 package net
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -21,11 +22,48 @@ type IntensityFactorsResponse struct {
 // https://carbon-intensity.github.io/api-definitions/?shell#get-intensity
 type IntensityRecentResponse = e.IntensityWithDate
 
-// https://carbon-intensity.github.io/api-definitions/?shell#get-intensity-date
-type IntensityTodayResponse = e.IntensityWithDate
+type IntensityRecentRequest struct {
+	Endpoint string
+	Response IntensityRecentResponse
+}
 
-// https://carbon-intensity.github.io/api-definitions/?shell#get-intensity-stats-from-to
-type IntensityByIntervalResponse = e.IntensityWithDate
+func NewIntensityRecentRequest(endpoint string) IntensityRecentRequest {
+	return IntensityRecentRequest{
+		Endpoint: endpoint,
+		Response: IntensityRecentResponse{},
+	}
+}
+
+func (r *IntensityRecentRequest) GetEndpoint() string {
+	return ""
+}
+
+func (r *IntensityRecentRequest) Get() ([]byte, error) {
+	res, err := DoRequest(r.Endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+	return res, nil
+}
+
+func (r *IntensityRecentRequest) Validate(response []byte) bool {
+	return ValidateResponse(r.Endpoint, response)
+}
+
+func (r *IntensityRecentRequest) UnMarshal(response []byte) error {
+	err := json.Unmarshal(response, &r.Response)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+
+	return nil
+}
+
+type IntensityAllRegionsRequest struct {
+	Endpoint string
+	Response IntensityByAllRegionsResponse
+}
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional
 type IntensityByAllRegionsResponse struct {
@@ -33,6 +71,40 @@ type IntensityByAllRegionsResponse struct {
 		e.DateTime
 		Regions []e.RegionWithGenerationAndIntensity `json:"regions"`
 	} `json:"data"`
+}
+
+func NewIntensityAllRegionsRequest(endpoint string) IntensityAllRegionsRequest {
+	return IntensityAllRegionsRequest{
+		Endpoint: endpoint,
+		Response: IntensityByAllRegionsResponse{},
+	}
+}
+
+func (r *IntensityAllRegionsRequest) GetEndpoint(args []string, flags map[string]string) {
+	// if len(args) > 0 {
+	// 	r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, args[0])
+	// }
+}
+
+func (r *IntensityAllRegionsRequest) Get() ([]byte, error) {
+	res, err := DoRequest(r.Endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+	return res, nil
+}
+
+func (r *IntensityAllRegionsRequest) Validate(response []byte) bool {
+	return ValidateResponse("regional", response)
+}
+
+func (r *IntensityAllRegionsRequest) UnMarshal(response []byte) error {
+	err := json.Unmarshal(response, &r.Response)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+	return nil
 }
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional-england
@@ -45,6 +117,23 @@ type IntensityByMainRegionResponse struct {
 		} `json:"data"`
 	} `json:"data"`
 }
+
+type IntensityMainRegionsRequest struct {
+	Endpoint string
+	Response IntensityByMainRegionResponse
+}
+
+func (r *IntensityMainRegionsRequest) GetEndpoint(args []string, flags map[string]string) {
+	if len(args) > 0 {
+		r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, args[0])
+	}
+}
+
+// https://carbon-intensity.github.io/api-definitions/?shell#get-intensity-date
+type IntensityTodayResponse = e.IntensityWithDate
+
+// https://carbon-intensity.github.io/api-definitions/?shell#get-intensity-stats-from-to
+type IntensityByIntervalResponse = e.IntensityWithDate
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional-regionid-regionid
 type IntensityByRegionIdResponse = e.IntensityWithDateAndRegionWithGenerationAndIntensity
@@ -87,36 +176,4 @@ func DoRequest(endpoint string) ([]byte, error) {
 	}
 
 	return body, nil
-
-	// isValid := validateResponse(endpoint, body)
-
-	// if !isValid {
-	// 	return
-	// }
-
-	// recent := getResponseTypeByEndpoint(endpoint)
-	// var recent
-
-	// recent := []byte{}
-	// err = json.Unmarshal(body, &recent)
-
-	// if err != nil {
-	// 	fmt.Println("Error:", err)
-	// 	return
-	// }
-
-	// fmt.Println("Response Body:", recent)
-}
-
-func GetEndpoint(endpoint string, args []string, flags map[string]string) string {
-	fmt.Println(args, flags)
-	if len(args) > 0 {
-		endpoint = fmt.Sprintf("%v/%v", endpoint, args[0])
-		return endpoint
-	}
-	if flags["id"] != "" {
-		endpoint = fmt.Sprintf("%v/regionid/%v", endpoint, flags["id"])
-	}
-
-	return endpoint
 }
