@@ -17,7 +17,7 @@ var From string
 // End date
 var To string
 var Next string
-var Past string
+var Past bool
 var Postcode string
 var RegionId string
 

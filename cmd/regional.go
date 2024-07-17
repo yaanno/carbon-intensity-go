@@ -70,13 +70,13 @@ var regionalCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(regionalCmd)
-	regionalCmd.Flags().StringVar(&From, "start-date", "", "Start date in YYYY-MM-DD format")
-	regionalCmd.Flags().StringVar(&To, "end-date", "", "End date in YYYY-MM-DD format")
-	regionalCmd.Flags().StringVar(&Next, "next", "24", "Forecast for the next hours for GB regions")
-	regionalCmd.Flags().BoolVar(&Forecast, "forecast", false, "Forecast for the next hours for GB regions")
-	regionalCmd.Flags().StringVar(&Postcode, "postcode", "", "Data for a region specified by postcode")
+	regionalCmd.Flags().StringVarP(&From, "start-date", "s", "", "Start date in YYYY-MM-DD format")
+	regionalCmd.Flags().StringVarP(&To, "end-date", "e", "", "End date in YYYY-MM-DD format")
+	regionalCmd.Flags().StringVarP(&Next, "next", "n", "24", "Forecast for the next hours for GB regions")
+	regionalCmd.Flags().BoolVarP(&Forecast, "forecast", "f", false, "Forecast for the next hours for GB regions")
+	regionalCmd.Flags().StringVarP(&Postcode, "postcode", "p", "", "Data for a region specified by postcode")
 	regionalCmd.Flags().StringVar(&RegionId, "id", "", "Data for a region specified by region id")
-	// regionalCmd.MarkFlagsRequiredTogether("start-date", "end-date")
+	regionalCmd.MarkFlagsRequiredTogether("start-date", "end-date")
 	regionalCmd.MarkFlagsRequiredTogether("forecast", "next")
 
 	// Here you will define your flags and configuration settings.
