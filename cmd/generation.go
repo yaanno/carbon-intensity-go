@@ -14,7 +14,10 @@ import (
 // generationCmd represents the generation command
 var generationCmd = &cobra.Command{
 	Use:   "generation",
-	Short: "A brief description of your command",
+	Short: "Generation Mix for the GB power system",
+	Long: `Generation Mix for the GB power system.
+Contains the following fuel types:
+gas, coal, nuclear, biomass, hydro, imports, solar, wind, other.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		var dateValid bool
 		if cmd.Flag("start-date").Changed {

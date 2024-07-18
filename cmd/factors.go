@@ -13,10 +13,9 @@ import (
 // factorsCmd represents the factors command
 var factorsCmd = &cobra.Command{
 	Use:   "factors",
-	Short: "A brief description of your command",
+	Short: "Get Carbon Intensity factors for each fuel type",
 	Args:  cobra.NoArgs,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("factors called")
 		request := s.NewFactorsRequest("intensity")
 		request.GetEndpoint()
 		result, err := request.Get()

@@ -27,8 +27,8 @@ var Forecast bool
 var rootCmd = &cobra.Command{
 	Use:   "carbon-intensity",
 	Short: "Display Carbon Intensity data",
-	// 	Long: `A longer description that spans multiple lines and likely contains
-	// examples and usage of using your application. For example:
+	Long: `This CLI is a query and display interface for the Carbon Intensity API for Great Britain 
+developed by National Grid. You can find out more about carbon intensity at http://carbonintensity.org.uk.`,
 }
 
 func Execute() {
