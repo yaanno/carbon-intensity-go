@@ -9,6 +9,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var Future string
+var Back string
+
 // natCmd represents the nat command
 var nationalByPeriodCmd = &cobra.Command{
 	Use:   "period",
@@ -21,19 +24,14 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("nat called")
+		cmd.Usage()
 	},
 }
 
 func init() {
 	nationalCmd.AddCommand(nationalByPeriodCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// natCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// natCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	nationalByPeriodCmd.Flags().StringVarP(&From, "start-date", "s", "", "Start date in YYYY-MM-DD format")
+	nationalByPeriodCmd.Flags().StringVarP(&To, "end-date", "e", "", "End date in YYYY-MM-DD format")
+	nationalByPeriodCmd.Flags().StringVarP(&Future, "future", "f", "", "Get data x hrs forwards from specific datetime")
+	nationalByPeriodCmd.Flags().StringVarP(&Back, "past", "p", "", "Get data x hrs backwards from specific datetime")
 }
