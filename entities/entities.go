@@ -34,6 +34,12 @@ type IntensityWithDateAndRegionWithGenerationAndIntensity struct {
 	} `json:"data"`
 }
 
+type Factors struct {
+	Data []struct {
+		Factor
+	} `json:"data"`
+}
+
 // https://carbon-intensity.github.io/api-definitions/?shell#factors
 type Factor struct {
 	Biomass          int `json:"Biomass"`
