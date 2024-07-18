@@ -83,25 +83,3 @@ func initConfig() {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
 }
-
-// var statsCmd = &cobra.Command{
-// 	Use:   "stats",
-// 	Short: "Get Carbon Intensity data",
-// 	Args:  cobra.ExactArgs(0),
-// 	Run: func(cmd *cobra.Command, args []string) {
-// 		fmt.Println("Echo: " + strings.Join(args, " "))
-// 	},
-// }
-
-// var generationCmd = &cobra.Command{
-// 	Use:   "generation [now | today | past]",
-// 	Short: "Generation Mix for the GB power system",
-// 	ValidArgs: []string{
-// 		"now", "today", "past",
-// 	},
-// 	Args: cobra.MatchAll(cobra.ExactArgs(1), cobra.OnlyValidArgs),
-// 	Run: func(cmd *cobra.Command, args []string) {
-// 		fmt.Println("Echo: " + strings.Join(args, time.Now().Format(time.RFC3339)))
-// 	},
-// 	Example: "generation past --window 24",
-// }

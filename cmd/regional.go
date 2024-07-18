@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"time"
 
-	r "carbon-intensity/net"
+	s "carbon-intensity/services"
 
 	"github.com/spf13/cobra"
 )
@@ -48,7 +48,7 @@ var regionalCmd = &cobra.Command{
 			"window":     cmd.Flag("next").Value.String(),
 		}
 
-		request := r.NewIntensityAllRegionsRequest("regional")
+		request := s.NewIntensityAllRegionsRequest("regional")
 		request.GetEndpoint(args, flagsValues)
 		result, err := request.Get()
 		if err != nil {
@@ -78,16 +78,6 @@ func init() {
 	regionalCmd.Flags().StringVar(&RegionId, "id", "", "Data for a region specified by region id")
 	regionalCmd.MarkFlagsRequiredTogether("start-date", "end-date")
 	regionalCmd.MarkFlagsRequiredTogether("forecast", "next")
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// regionalCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// regionalCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 func validateDate(date string) bool {

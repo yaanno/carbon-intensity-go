@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 
-	r "carbon-intensity/net"
+	s "carbon-intensity/services"
 
 	"github.com/spf13/cobra"
 )
@@ -16,7 +16,6 @@ var generationCmd = &cobra.Command{
 	Use:   "generation",
 	Short: "A brief description of your command",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("generation called")
 		var dateValid bool
 		if cmd.Flag("start-date").Changed {
 			dateValid = validateDate(cmd.Flag("start-date").Value.String())
@@ -37,7 +36,7 @@ var generationCmd = &cobra.Command{
 			"end-date":   cmd.Flag("end-date").Value.String(),
 			"past":       cmd.Flag("past").Value.String(),
 		}
-		request := r.NewGenerationMixRequest("generation")
+		request := s.NewGenerationMixRequest("generation")
 		request.GetEndpoint(args, flagsValues)
 		result, err := request.Get()
 		if err != nil {

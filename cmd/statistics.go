@@ -4,7 +4,7 @@ Copyright © 2024 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
-	r "carbon-intensity/net"
+	s "carbon-intensity/services"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -15,7 +15,6 @@ var statisticsCmd = &cobra.Command{
 	Use:   "statistics",
 	Short: "A brief description of your command",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("statistics called")
 		var dateValid bool
 		if cmd.Flag("start-date").Changed {
 			dateValid = validateDate(cmd.Flag("start-date").Value.String())
@@ -35,7 +34,7 @@ var statisticsCmd = &cobra.Command{
 			"start-date": cmd.Flag("start-date").Value.String(),
 			"end-date":   cmd.Flag("end-date").Value.String(),
 		}
-		request := r.NewIntensityIntervalRequest("intensity")
+		request := s.NewIntensityIntervalRequest("intensity")
 		request.GetEndpoint(args, flagsValues)
 		result, err := request.Get()
 		if err != nil {
@@ -61,14 +60,4 @@ func init() {
 	statisticsCmd.Flags().StringVarP(&To, "end-date", "e", "", "End date in YYYY-MM-DD format")
 	statisticsCmd.MarkFlagRequired("start-date")
 	statisticsCmd.MarkFlagRequired("end-date")
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// statisticsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// statisticsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
