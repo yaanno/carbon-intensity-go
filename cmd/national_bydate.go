@@ -10,20 +10,31 @@ import (
 )
 
 var Date string
-var Period string
+var Period uint
 
 // natCmd represents the nat command
 var nationalByDateCmd = &cobra.Command{
 	Use:   "date",
-	Short: "A brief description of your command",
-	Long: `A longer description that spans multiple lines and likely contains examples
-and usage of using your command. For example:
-
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+	Short: "Carbon Intensity data for a specific date",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("nat called")
+		fmt.Println("nationalByDateCmd called")
+		var dateValid bool
+		isToday := cmd.Flag("today").Value
+		period := cmd.Flag("period").Value
+		date := cmd.Flag("date")
+
+		if cmd.Flag("date").Changed {
+			dateValid = validateDate(cmd.Flag("date").Value.String())
+			if !dateValid {
+				fmt.Println(cmd.UsageString())
+				return
+			}
+		}
+		fmt.Println(date.Value, isToday, period)
+		// flagsValues := map[string]string{
+		// 	"start-date": cmd.Flag("start-date").Value.String(),
+		// 	"end-date":   cmd.Flag("end-date").Value.String(),
+		// }
 		cmd.Usage()
 	},
 }
@@ -32,5 +43,5 @@ func init() {
 	nationalCmd.AddCommand(nationalByDateCmd)
 	nationalByDateCmd.Flags().StringVarP(&Date, "date", "d", "", "Data for a specific date in YYYY-MM-DD format")
 	nationalByDateCmd.Flags().BoolP("today", "t", false, "Data for today")
-	nationalByDateCmd.Flags().StringVarP(&Period, "period", "p", "", "Data for specific date (YYYY-MM-DD) and period (half hour settlement: 1-48)")
+	nationalByDateCmd.Flags().UintVarP(&Period, "period", "p", 1, "Data for a specific date (YYYY-MM-DD) and period (in half hour settlements: 1-48)")
 }

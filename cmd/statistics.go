@@ -13,7 +13,7 @@ import (
 // statisticsCmd represents the statistics command
 var statisticsCmd = &cobra.Command{
 	Use:   "statistics",
-	Short: "Get Carbon Intensity statistics between from and to datetime",
+	Short: "Carbon Intensity statistics up to a month period",
 	Run: func(cmd *cobra.Command, args []string) {
 		var dateValid bool
 		if cmd.Flag("start-date").Changed {
