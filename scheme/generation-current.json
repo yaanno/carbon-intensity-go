@@ -1,0 +1,44 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Generated schema for Root",
+    "type": "object",
+    "properties": {
+      "data": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "generationmix": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "fuel": {
+                  "type": "string"
+                },
+                "perc": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "fuel",
+                "perc"
+              ]
+            }
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "generationmix"
+        ]
+      }
+    },
+    "required": [
+      "data"
+    ]
+  }
