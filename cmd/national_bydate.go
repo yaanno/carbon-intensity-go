@@ -25,6 +25,7 @@ var nationalByDateCmd = &cobra.Command{
 
 		if isToday.String() == "true" {
 			nationalTodayCmd()
+			return
 		}
 
 		if date.Changed {
@@ -38,6 +39,7 @@ var nationalByDateCmd = &cobra.Command{
 				"period": period.Value.String(),
 			}
 			nationalDateWithPeriodCmd(flagsValues)
+			return
 		} else {
 			cmd.Usage()
 		}
