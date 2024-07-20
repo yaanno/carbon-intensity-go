@@ -19,23 +19,10 @@ var generationCmd = &cobra.Command{
 Contains the following fuel types:
 gas, coal, nuclear, biomass, hydro, imports, solar, wind, other.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		if cmd.Flag("current").Changed && cmd.Flag("current").Value.String() == "true" {
-			request := s.NewGenerationMixRecentRequest("generation")
-			result, err := request.Get()
-			if err != nil {
-				fmt.Println("Error:")
-				fmt.Println(err)
-				return
-			}
-			valid := request.Validate(result)
-			if !valid {
-				return
-			}
-			err = request.UnMarshal(result)
-			if err != nil {
-				return
-			}
-			fmt.Println(request.Response.Data)
+		current, _ := cmd.Flags().GetBool("current")
+		past, _ := cmd.Flags().GetBool("past")
+		if current {
+			generationMixRecent()
 			return
 		}
 
@@ -59,11 +46,11 @@ gas, coal, nuclear, biomass, hydro, imports, solar, wind, other.`,
 				return
 			}
 		}
-		flagsValues := map[string]string{
+		flagsValues := map[string]interface{}{
 			"start-date": cmd.Flag("start-date").Value.String(),
 			"end-date":   cmd.Flag("end-date").Value.String(),
-			"past":       cmd.Flag("past").Value.String(),
-			"current":    cmd.Flag("current").Value.String(),
+			"past":       past,
+			"current":    current,
 		}
 		request := s.NewGenerationMixRequest("generation")
 		request.GetEndpoint(args, flagsValues)
@@ -95,4 +82,23 @@ func init() {
 	generationCmd.MarkFlagsMutuallyExclusive("past", "current")
 	generationCmd.MarkFlagsMutuallyExclusive("current", "start-date")
 	generationCmd.MarkFlagsMutuallyExclusive("current", "end-date")
+}
+
+func generationMixRecent() {
+	request := s.NewGenerationMixRecentRequest("generation")
+	result, err := request.Get()
+	if err != nil {
+		fmt.Println("Error:")
+		fmt.Println(err)
+		return
+	}
+	valid := request.Validate(result)
+	if !valid {
+		return
+	}
+	err = request.UnMarshal(result)
+	if err != nil {
+		return
+	}
+	fmt.Println(request.Response.Data)
 }

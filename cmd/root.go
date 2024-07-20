@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -40,24 +41,6 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
-	// regionalCmd.PersistentFlags().StringVar(&From, "start-date", "", "Start date in YYYY-MM-DD format")
-	// regionalCmd.PersistentFlags().StringVar(&To, "end-date", "", "End date in YYYY-MM-DD format")
-	// regionalCmd.PersistentFlags().StringVar(&Next, "next", "24", "Forecast for the next hours for GB regions")
-	// regionalCmd.PersistentFlags().BoolVar(&Forecast, "forecast", false, "Forecast for the next hours for GB regions")
-	// regionalCmd.PersistentFlags().StringVar(&Postcode, "postcode", "", "Data for a region specified by postcode")
-	// regionalCmd.PersistentFlags().StringVar(&RegionId, "id", "", "Data for a region specified by region id")
-	// regionalCmd.MarkFlagsRequiredTogether("start-date", "end-date")
-	// regionalCmd.MarkFlagsRequiredTogether("forecast", "next")
-
-	// statsCmd.PersistentFlags().StringVar(&From, "start-date", "", "Start date in YYYY-MM-DD format")
-	// statsCmd.PersistentFlags().StringVar(&To, "end-date", "", "End date in YYYY-MM-DD format")
-	// statsCmd.MarkFlagRequired("start-date")
-	// statsCmd.MarkFlagRequired("end-date")
-	// statsCmd.MarkFlagsRequiredTogether("start-date", "end-date")
-
-	// generationCmd.PersistentFlags().StringVar(&Past, "window", "24", "Get generation mix for the previous specified hours")
-	// rootCmd.AddCommand(regionalCmd, statsCmd, generationCmd)
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -82,4 +65,16 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+func validateDate(date string) bool {
+	_, err := time.Parse(time.DateOnly, date)
+	if err != nil {
+		fmt.Printf(
+			"Error: invalid date: `%v`. Please use the YYYY-MM-DD format\n",
+			date,
+		)
+		return false
+	}
+	return true
 }

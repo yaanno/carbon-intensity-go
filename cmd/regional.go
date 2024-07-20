@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"time"
 
 	s "carbon-intensity/services"
 
@@ -78,16 +77,4 @@ func init() {
 	regionalCmd.Flags().StringVar(&RegionId, "id", "", "Data for a region specified by region id")
 	regionalCmd.MarkFlagsRequiredTogether("start-date", "end-date")
 	regionalCmd.MarkFlagsRequiredTogether("forecast", "next")
-}
-
-func validateDate(date string) bool {
-	_, err := time.Parse(time.DateOnly, date)
-	if err != nil {
-		fmt.Printf(
-			"Error: invalid date: `%v`. Please use the YYYY-MM-DD format\n",
-			date,
-		)
-		return false
-	}
-	return true
 }

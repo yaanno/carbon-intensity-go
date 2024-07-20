@@ -18,12 +18,11 @@ var nationalByDateCmd = &cobra.Command{
 	Use:   "date",
 	Short: "Carbon Intensity data for a specific date",
 	Run: func(cmd *cobra.Command, args []string) {
-
-		isToday := cmd.Flag("today").Value
+		isToday, _ := cmd.Flags().GetBool("today")
 		date := cmd.Flag("date")
 		period := cmd.Flag("period")
 
-		if isToday.String() == "true" {
+		if isToday {
 			nationalTodayCmd()
 			return
 		}

@@ -154,17 +154,19 @@ func NewIntensityPeriodRequest(endpoint string) IntensityPeriodRequest {
 	}
 }
 
-func (r *IntensityPeriodRequest) GetEndpoint(flags map[string]string) {
+func (r *IntensityPeriodRequest) GetEndpoint(flags map[string]interface{}) {
 	if len(flags) > 0 {
 		r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, flags["from"])
 
-		if flags["to"] != "" {
+		if flags["to"] != nil {
 			r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, flags["to"])
 		}
-		if flags["past"] == "true" {
+
+		if flags["past"] == true {
 			r.Endpoint = fmt.Sprintf("%v/pt24", r.Endpoint)
 		}
-		if flags["future"] == "true" {
+
+		if flags["future"] == true {
 			r.Endpoint = fmt.Sprintf("%v/fw%v", r.Endpoint, flags["hours"])
 		}
 	}

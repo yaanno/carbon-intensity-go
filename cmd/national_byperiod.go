@@ -18,14 +18,14 @@ var nationalByPeriodCmd = &cobra.Command{
 	Use:   "period",
 	Short: "Carbon Intensity data by specified period",
 	Run: func(cmd *cobra.Command, args []string) {
-		future := cmd.Flag("future").Value.String()
-		past := cmd.Flag("past").Value.String()
-		hours := cmd.Flag("hours").Value.String()
+		pastVal, _ := cmd.Flags().GetBool("past")
+		hoursVal, _ := cmd.Flags().GetUint("hours")
+		futureVal, _ := cmd.Flags().GetBool("future")
 
-		flagsValues := map[string]string{
-			"hours":  hours,
-			"past":   past,
-			"future": future,
+		flagsValues := map[string]interface{}{
+			"hours":  hoursVal,
+			"past":   pastVal,
+			"future": futureVal,
 		}
 
 		if cmd.Flag("start-date").Changed {
@@ -63,7 +63,7 @@ func init() {
 	nationalByPeriodCmd.MarkFlagsMutuallyExclusive("past", "end-date")
 }
 
-func nationalByPeriodStartDate(flags map[string]string) {
+func nationalByPeriodStartDate(flags map[string]interface{}) {
 	request := s.NewIntensityPeriodRequest("intensity")
 	request.GetEndpoint(flags)
 	result, err := request.Get()
