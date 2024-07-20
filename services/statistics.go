@@ -11,12 +11,14 @@ import (
 type IntensityByIntervalResponse = e.IntensityWithDate
 
 type IntensityIntervalRequest struct {
+	Schema   string
 	Endpoint string
 	Response IntensityByIntervalResponse
 }
 
 func NewIntensityIntervalRequest(endpoint string) IntensityIntervalRequest {
 	return IntensityIntervalRequest{
+		Schema:   "statistics",
 		Endpoint: endpoint,
 		Response: IntensityByIntervalResponse{},
 	}
@@ -37,7 +39,7 @@ func (r *IntensityIntervalRequest) Get() ([]byte, error) {
 }
 
 func (r *IntensityIntervalRequest) Validate(response []byte) bool {
-	return req.ValidateResponse("statistics", response)
+	return req.ValidateResponse(r.Schema, response)
 }
 
 func (r *IntensityIntervalRequest) UnMarshal(response []byte) error {
