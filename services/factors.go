@@ -11,12 +11,14 @@ import (
 type FactorsResponse = e.Factors
 
 type FactorsRequest struct {
+	Schema   string
 	Endpoint string
 	Response FactorsResponse
 }
 
 func NewFactorsRequest(endpoint string) FactorsRequest {
 	return FactorsRequest{
+		Schema:   "factors",
 		Endpoint: endpoint,
 		Response: FactorsResponse{},
 	}
@@ -35,7 +37,7 @@ func (r *FactorsRequest) Get() ([]byte, error) {
 }
 
 func (r *FactorsRequest) Validate(response []byte) bool {
-	return req.ValidateResponse("factors", response)
+	return req.ValidateResponse(r.Schema, response)
 }
 
 func (r *FactorsRequest) UnMarshal(response []byte) error {
