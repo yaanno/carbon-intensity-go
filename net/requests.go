@@ -37,9 +37,6 @@ func (r *IntensityMainRegionsRequest) GetEndpoint(args []string, flags map[strin
 	}
 }
 
-// https://carbon-intensity.github.io/api-definitions/?shell#get-intensity-date
-type IntensityTodayResponse = e.IntensityWithDate
-
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional-regionid-regionid
 type IntensityByRegionIdResponse = e.IntensityWithDateAndRegionWithGenerationAndIntensity
 
