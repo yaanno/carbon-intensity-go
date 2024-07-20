@@ -17,10 +17,12 @@ type GenerationMixRecentResponse struct {
 type GenerationMixRecentRequest struct {
 	Endpoint string
 	Response GenerationMixRecentResponse
+	Schema   string
 }
 
 func NewGenerationMixRecentRequest(endpoint string) GenerationMixRecentRequest {
 	return GenerationMixRecentRequest{
+		Schema:   "generation-current",
 		Endpoint: endpoint,
 		Response: GenerationMixRecentResponse{},
 	}
@@ -38,7 +40,7 @@ func (r *GenerationMixRecentRequest) Get() ([]byte, error) {
 }
 
 func (r *GenerationMixRecentRequest) Validate(response []byte) bool {
-	return req.ValidateResponse("generation-current", response)
+	return req.ValidateResponse(r.Schema, response)
 }
 
 func (r *GenerationMixRecentRequest) UnMarshal(response []byte) error {
@@ -61,12 +63,14 @@ type GenerationMixIntervalResponse struct {
 type GenerationMixIntervalRequest struct {
 	Endpoint string
 	Response GenerationMixIntervalResponse
+	Schema   string
 }
 
 func NewGenerationMixRequest(endpoint string) GenerationMixIntervalRequest {
 	return GenerationMixIntervalRequest{
 		Endpoint: endpoint,
 		Response: GenerationMixIntervalResponse{},
+		Schema:   "generation",
 	}
 }
 
@@ -89,7 +93,7 @@ func (r *GenerationMixIntervalRequest) Get() ([]byte, error) {
 }
 
 func (r *GenerationMixIntervalRequest) Validate(response []byte) bool {
-	return req.ValidateResponse("generation", response)
+	return req.ValidateResponse(r.Schema, response)
 }
 
 func (r *GenerationMixIntervalRequest) UnMarshal(response []byte) error {
