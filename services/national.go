@@ -11,12 +11,14 @@ import (
 type IntensityRecentResponse = e.IntensityWithDate
 
 type IntensityRecentRequest struct {
+	Schema   string
 	Endpoint string
 	Response IntensityRecentResponse
 }
 
 func NewIntensityRecentRequest(endpoint string) IntensityRecentRequest {
 	return IntensityRecentRequest{
+		Schema:   "intensity",
 		Endpoint: endpoint,
 		Response: IntensityRecentResponse{},
 	}
@@ -35,7 +37,7 @@ func (r *IntensityRecentRequest) Get() ([]byte, error) {
 }
 
 func (r *IntensityRecentRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Endpoint, response)
+	return req.ValidateResponse(r.Schema, response)
 }
 
 func (r *IntensityRecentRequest) UnMarshal(response []byte) error {

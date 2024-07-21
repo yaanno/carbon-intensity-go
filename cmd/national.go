@@ -15,8 +15,9 @@ var nationalCmd = &cobra.Command{
 	Use:   "national",
 	Short: "National Carbon Intensity data",
 	Run: func(cmd *cobra.Command, args []string) {
-		if cmd.Flag("current").Value.String() == "false" {
-			cmd.Usage()
+		current, _ := cmd.Flags().GetBool("current")
+		if !current {
+			cmd.Help()
 		} else {
 			request := s.NewIntensityRecentRequest("intensity")
 			request.GetEndpoint()

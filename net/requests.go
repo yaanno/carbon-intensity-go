@@ -37,12 +37,6 @@ func (r *IntensityMainRegionsRequest) GetEndpoint(args []string, flags map[strin
 	}
 }
 
-// https://carbon-intensity.github.io/api-definitions/?shell#get-regional-regionid-regionid
-type IntensityByRegionIdResponse = e.IntensityWithDateAndRegionWithGenerationAndIntensity
-
-// https://carbon-intensity.github.io/api-definitions/?shell#get-regional-postcode-postcode
-type IntensityByRegionPostCodeResponse = e.IntensityWithDateAndRegionWithGenerationAndIntensity
-
 type IntensityByDatetimeAndRegionResponse = e.IntensityWithDateAndRegionWithGenerationAndIntensity
 
 const api = "https://api.carbonintensity.org.uk/"

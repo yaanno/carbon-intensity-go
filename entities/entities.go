@@ -29,8 +29,12 @@ type IntensityWithDate struct {
 }
 type IntensityWithDateAndRegionWithGenerationAndIntensity struct {
 	Data []struct {
-		DateTime
-		Intensity `json:"intensity"`
+		Region
+		Data []struct {
+			Generationmix []Generationmix `json:"generationmix"`
+			Intensity     Intensity
+			DateTime
+		} `json:"data"`
 	} `json:"data"`
 }
 
