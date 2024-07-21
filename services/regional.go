@@ -113,3 +113,67 @@ func (r *IntensityRegionsPostcodeRequest) UnMarshal(response *[]byte) error {
 
 // https://carbon-intensity.github.io/api-definitions/?shell#get-regional-regionid-regionid
 type IntensityByRegionIdResponse = e.IntensityWithDateAndRegionWithGenerationAndIntensity
+
+type IntensityDateResponse = e.IntensityWithDate
+
+type IntensityDateRequest struct {
+	Schema   string
+	Endpoint string
+	Response IntensityPeriodResponse
+}
+
+func NewIntensityDateRequest(endpoint string) IntensityDateRequest {
+	return IntensityDateRequest{
+		Schema:   "regional-date-intensity",
+		Endpoint: endpoint,
+		Response: IntensityDateResponse{},
+	}
+}
+
+func (r *IntensityDateRequest) GetEndpoint(flags map[string]interface{}) {
+	if len(flags) > 0 {
+		r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, flags["from"])
+
+		if flags["to"] != nil {
+			r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, flags["to"])
+		}
+
+		if flags["past"] == true {
+			r.Endpoint = fmt.Sprintf("%v/pt24", r.Endpoint)
+		}
+
+		if flags["future"] == true {
+			r.Endpoint = fmt.Sprintf("%v/fw%v", r.Endpoint, flags["hours"])
+		}
+	}
+}
+
+func (r *IntensityDateRequest) Get() ([]byte, error) {
+	res, err := req.DoRequest(r.Endpoint)
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
+	}
+	return nil, err
+}
+
+func (r *IntensityDateRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
+}
+
+func (r *IntensityDateRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
+	if err != nil {
+		fmt.Println("Error:", &err)
+		return err
+	}
+
+	return nil
+}
