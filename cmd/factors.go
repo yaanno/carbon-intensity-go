@@ -18,18 +18,10 @@ var factorsCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		request := s.NewFactorsRequest("intensity")
 		request.GetEndpoint()
-		result, err := request.Get()
+		_, err := request.Get()
 		if err != nil {
 			fmt.Println("Error:")
 			fmt.Println(err)
-			return
-		}
-		valid := request.Validate(result)
-		if !valid {
-			return
-		}
-		err = request.UnMarshal(result)
-		if err != nil {
 			return
 		}
 		fmt.Println(request.Response)

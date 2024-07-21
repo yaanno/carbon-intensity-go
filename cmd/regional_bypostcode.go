@@ -24,20 +24,20 @@ var regionalByPostCodeCmd = &cobra.Command{
 		} else if current && postcode == "" {
 			cmd.Usage()
 		} else if current && postcode != "" {
-			regionalbyPostcodeCurrent(postcode)
+			regionalbyPostcodeCurrent(&postcode)
 		} else {
 			pastVal, _ := cmd.Flags().GetBool("past")
 			futureVal, _ := cmd.Flags().GetBool("future")
 
 			flagsValues := map[string]interface{}{
-				"past":   pastVal,
-				"future": futureVal,
+				"past":   &pastVal,
+				"future": &futureVal,
 			}
 			if cmd.Flag("start-date").Changed {
 				startVal := cmd.Flag("start-date").Value.String()
 
 				if validateDate(startVal) {
-					flagsValues["from"] = startVal
+					flagsValues["from"] = &startVal
 				} else {
 					return
 				}
@@ -45,7 +45,7 @@ var regionalByPostCodeCmd = &cobra.Command{
 			if cmd.Flag("end-date").Changed {
 				endVal := cmd.Flag("end-date").Value.String()
 				if validateDate(endVal) {
-					flagsValues["to"] = endVal
+					flagsValues["to"] = &endVal
 				} else {
 					return
 				}
@@ -71,23 +71,15 @@ func init() {
 	// regionalByPostCodeCmd.MarkFlagRequired("postcode")
 }
 
-func regionalbyPostcodeCurrent(postcode string) {
+func regionalbyPostcodeCurrent(postcode *string) {
 	request := s.NewIntensityRegionsPostcodeRequest("regional")
 	request.GetEndpoint(postcode)
-	result, err := request.Get()
+	_, err := request.Get()
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	valid := request.Validate(result)
-	if !valid {
-		return
-	}
-	err = request.UnMarshal(result)
-	if err != nil {
-		return
-	}
-	fmt.Println(request.Response.Data)
+	fmt.Println(&request.Response.Data)
 }
 
 func regionalbyPostcodeAndDate(flags map[string]interface{}) {

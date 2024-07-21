@@ -24,28 +24,36 @@ func NewIntensityIntervalRequest(endpoint string) IntensityIntervalRequest {
 	}
 }
 
-func (r *IntensityIntervalRequest) GetEndpoint(args []string, flags map[string]string) {
+func (r *IntensityIntervalRequest) GetEndpoint(flags map[string]string) {
 	if len(flags) > 0 {
-		r.Endpoint = fmt.Sprintf("%v/stats/%v/%v", r.Endpoint, flags["start-date"], flags["end-date"])
+		r.Endpoint = fmt.Sprintf("%v/stats/%v/%v", &r.Endpoint, flags["start-date"], flags["end-date"])
 	}
 }
 
-func (r *IntensityIntervalRequest) Get() ([]byte, error) {
+func (r *IntensityIntervalRequest) Get() (*[]byte, error) {
 	res, err := req.DoRequest(r.Endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
-	return res, nil
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return &res, nil
+	}
+	return nil, err
 }
 
-func (r *IntensityIntervalRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Schema, response)
+func (r *IntensityIntervalRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
 }
 
-func (r *IntensityIntervalRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *IntensityIntervalRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
 	return nil

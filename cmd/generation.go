@@ -53,19 +53,11 @@ gas, coal, nuclear, biomass, hydro, imports, solar, wind, other.`,
 			"current":    current,
 		}
 		request := s.NewGenerationMixRequest("generation")
-		request.GetEndpoint(args, flagsValues)
-		result, err := request.Get()
+		(&request).GetEndpoint(flagsValues)
+		_, err := request.Get()
 		if err != nil {
 			fmt.Println("Error:")
 			fmt.Println(err)
-			return
-		}
-		valid := request.Validate(result)
-		if !valid {
-			return
-		}
-		err = request.UnMarshal(result)
-		if err != nil {
 			return
 		}
 		fmt.Println(request.Response.Data)
@@ -86,18 +78,10 @@ func init() {
 
 func generationMixRecent() {
 	request := s.NewGenerationMixRecentRequest("generation")
-	result, err := request.Get()
+	_, err := request.Get()
 	if err != nil {
 		fmt.Println("Error:")
 		fmt.Println(err)
-		return
-	}
-	valid := request.Validate(result)
-	if !valid {
-		return
-	}
-	err = request.UnMarshal(result)
-	if err != nil {
 		return
 	}
 	fmt.Println(request.Response.Data)

@@ -24,8 +24,7 @@ func NewIntensityRecentRequest(endpoint string) IntensityRecentRequest {
 	}
 }
 
-func (r *IntensityRecentRequest) GetEndpoint() string {
-	return r.Endpoint
+func (r *IntensityRecentRequest) GetEndpoint() {
 }
 
 func (r *IntensityRecentRequest) Get() ([]byte, error) {
@@ -36,14 +35,14 @@ func (r *IntensityRecentRequest) Get() ([]byte, error) {
 	return res, nil
 }
 
-func (r *IntensityRecentRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Schema, response)
+func (r *IntensityRecentRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
 }
 
-func (r *IntensityRecentRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *IntensityRecentRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
 
@@ -68,25 +67,33 @@ func NewIntensityTodayRequest(endpoint string) IntensityTodayRequest {
 }
 
 func (r *IntensityTodayRequest) GetEndpoint() {
-	r.Endpoint = fmt.Sprintf("%v/date", r.Endpoint)
+	r.Endpoint = fmt.Sprintf("%v/date", &r.Endpoint)
 }
 
-func (r *IntensityTodayRequest) Get() ([]byte, error) {
+func (r *IntensityTodayRequest) Get() (*[]byte, error) {
 	res, err := req.DoRequest(r.Endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
-	return res, nil
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return &res, nil
+	}
+	return nil, err
 }
 
-func (r *IntensityTodayRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Schema, response)
+func (r *IntensityTodayRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
 }
 
-func (r *IntensityTodayRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *IntensityTodayRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
 
@@ -111,32 +118,39 @@ func NewIntensityDateAndPeriodRequest(endpoint string) IntensityDateAndPeriodReq
 
 func (r *IntensityDateAndPeriodRequest) GetEndpoint(flags map[string]string) {
 	if len(flags) > 0 {
-		r.Endpoint = fmt.Sprintf("%v/date/%v", r.Endpoint, flags["date"])
+		r.Endpoint = fmt.Sprintf("%v/date/%v", &r.Endpoint, flags["date"])
 		if flags["period"] != "" {
-			r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, flags["period"])
+			r.Endpoint = fmt.Sprintf("%v/%v", &r.Endpoint, flags["period"])
 		}
 	}
 }
 
-func (r *IntensityDateAndPeriodRequest) Get() ([]byte, error) {
+func (r *IntensityDateAndPeriodRequest) Get() (*[]byte, error) {
 	res, err := req.DoRequest(r.Endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
-	return res, nil
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return &res, nil
+	}
+	return nil, err
 }
 
-func (r *IntensityDateAndPeriodRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Schema, response)
+func (r *IntensityDateAndPeriodRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
 }
 
-func (r *IntensityDateAndPeriodRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *IntensityDateAndPeriodRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
-
 	return nil
 }
 
@@ -158,18 +172,18 @@ func NewIntensityPeriodRequest(endpoint string) IntensityPeriodRequest {
 
 func (r *IntensityPeriodRequest) GetEndpoint(flags map[string]interface{}) {
 	if len(flags) > 0 {
-		r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, flags["from"])
+		r.Endpoint = fmt.Sprintf("%v/%v", &r.Endpoint, flags["from"])
 
 		if flags["to"] != nil {
-			r.Endpoint = fmt.Sprintf("%v/%v", r.Endpoint, flags["to"])
+			r.Endpoint = fmt.Sprintf("%v/%v", &r.Endpoint, flags["to"])
 		}
 
 		if flags["past"] == true {
-			r.Endpoint = fmt.Sprintf("%v/pt24", r.Endpoint)
+			r.Endpoint = fmt.Sprintf("%v/pt24", &r.Endpoint)
 		}
 
 		if flags["future"] == true {
-			r.Endpoint = fmt.Sprintf("%v/fw%v", r.Endpoint, flags["hours"])
+			r.Endpoint = fmt.Sprintf("%v/fw%v", &r.Endpoint, flags["hours"])
 		}
 	}
 }
@@ -179,17 +193,25 @@ func (r *IntensityPeriodRequest) Get() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
-	return res, nil
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
+	}
+	return nil, err
 }
 
-func (r *IntensityPeriodRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Schema, response)
+func (r *IntensityPeriodRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
 }
 
-func (r *IntensityPeriodRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *IntensityPeriodRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
 

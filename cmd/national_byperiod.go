@@ -66,18 +66,10 @@ func init() {
 func nationalByPeriodStartDate(flags map[string]interface{}) {
 	request := s.NewIntensityPeriodRequest("intensity")
 	request.GetEndpoint(flags)
-	result, err := request.Get()
+	_, err := request.Get()
 	if err != nil {
 		fmt.Println("Error:")
 		fmt.Println(err)
-		return
-	}
-	valid := request.Validate(result)
-	if !valid {
-		return
-	}
-	err = request.UnMarshal(result)
-	if err != nil {
 		return
 	}
 	fmt.Println(request.Response.Data)

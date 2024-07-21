@@ -55,40 +55,25 @@ func init() {
 func nationalTodayCmd() {
 	request := s.NewIntensityTodayRequest("intensity")
 	request.GetEndpoint()
-	result, err := request.Get()
+	_, err := request.Get()
 	if err != nil {
 		fmt.Println("Error:")
 		fmt.Println(err)
 		return
 	}
-	valid := request.Validate(result)
-	if !valid {
-		return
-	}
-	err = request.UnMarshal(result)
-	if err != nil {
-		return
-	}
-	fmt.Println(request.Response.Data)
+	fmt.Println(&request.Response.Data)
 }
 
 func nationalDateWithPeriodCmd(flags map[string]string) {
 	request := s.NewIntensityDateAndPeriodRequest("intensity")
 	request.GetEndpoint(flags)
-	result, err := request.Get()
+	_, err := (&request).Get()
 	if err != nil {
 		fmt.Println("Error:")
-		fmt.Println(err)
+		fmt.Println(&err)
 		return
 	}
-	valid := request.Validate(result)
-	if !valid {
-		return
-	}
-	err = request.UnMarshal(result)
-	if err != nil {
-		return
-	}
-	fmt.Println(request.Response.Data)
+
+	fmt.Println(&request.Response.Data)
 
 }

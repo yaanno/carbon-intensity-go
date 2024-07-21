@@ -2,41 +2,7 @@ package entities
 
 // Entities
 
-type ResponseError struct {
-	Code    string `json:"code"`
-	Message string `json:"message"`
-}
-
-type GenerationAndIntensity struct {
-	Generationmix []Generationmix `json:"generationmix"`
-	Intensity     Intensity
-}
-
-type RegionWithGenerationAndIntensity struct {
-	Region
-	Generationmix []Generationmix `json:"generationmix"`
-	Intensity     Intensity
-}
-type DateTime struct {
-	From string `json:"from"`
-	To   string `json:"to"`
-}
-type IntensityWithDate struct {
-	Data []struct {
-		DateTime
-		Intensity `json:"intensity"`
-	} `json:"data"`
-}
-type IntensityWithDateAndRegionWithGenerationAndIntensity struct {
-	Data []struct {
-		Region
-		Data []struct {
-			Generationmix []Generationmix `json:"generationmix"`
-			Intensity     Intensity
-			DateTime
-		} `json:"data"`
-	} `json:"data"`
-}
+// Basic
 
 type Factors struct {
 	Data []struct {
@@ -80,4 +46,43 @@ type Region struct {
 	Dnoregion string `json:"dnoregion"`
 	Shortname string `json:"shortname"`
 	Postcode  string `json:"postcode"`
+}
+
+type ResponseError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+type DateTime struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+}
+
+// Composed
+
+type GenerationAndIntensity struct {
+	Generationmix []Generationmix `json:"generationmix"`
+	Intensity     Intensity
+}
+
+type RegionWithGenerationAndIntensity struct {
+	Region
+	GenerationAndIntensity
+}
+
+type IntensityWithDate struct {
+	Data []struct {
+		DateTime
+		Intensity `json:"intensity"`
+	} `json:"data"`
+}
+
+type IntensityWithDateAndRegionWithGenerationAndIntensity struct {
+	Data []struct {
+		Region
+		Data []struct {
+			DateTime
+			GenerationAndIntensity
+		} `json:"data"`
+	} `json:"data"`
 }

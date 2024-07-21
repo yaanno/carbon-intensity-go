@@ -21,18 +21,9 @@ var regionalCmd = &cobra.Command{
 			cmd.Help()
 		} else {
 			request := s.NewIntensityAllRegionsRequest("regional")
-			request.GetEndpoint()
-			result, err := request.Get()
+			_, err := request.Get()
 			if err != nil {
 				fmt.Println(err)
-				return
-			}
-			valid := request.Validate(result)
-			if !valid {
-				return
-			}
-			err = request.UnMarshal(result)
-			if err != nil {
 				return
 			}
 			fmt.Println(request.Response.Data)

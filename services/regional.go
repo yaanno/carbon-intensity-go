@@ -37,17 +37,25 @@ func (r *IntensityAllRegionsRequest) Get() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
-	return res, nil
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
+	}
+	return nil, err
 }
 
-func (r *IntensityAllRegionsRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Schema, response)
+func (r *IntensityAllRegionsRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
 }
 
-func (r *IntensityAllRegionsRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *IntensityAllRegionsRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
 	return nil
@@ -70,26 +78,34 @@ func NewIntensityRegionsPostcodeRequest(endpoint string) IntensityRegionsPostcod
 	}
 }
 
-func (r *IntensityRegionsPostcodeRequest) GetEndpoint(postcode string) {
-	r.Endpoint = fmt.Sprintf("%v/postcode/%v", r.Endpoint, postcode)
+func (r *IntensityRegionsPostcodeRequest) GetEndpoint(postcode *string) {
+	r.Endpoint = fmt.Sprintf("%v/postcode/%v", &r.Endpoint, &postcode)
 }
 
-func (r *IntensityRegionsPostcodeRequest) Get() ([]byte, error) {
+func (r *IntensityRegionsPostcodeRequest) Get() (*[]byte, error) {
 	res, err := req.DoRequest(r.Endpoint)
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
-	return res, nil
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return &res, nil
+	}
+	return nil, err
 }
 
-func (r *IntensityRegionsPostcodeRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Scheme, response)
+func (r *IntensityRegionsPostcodeRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Scheme, *response)
 }
 
-func (r *IntensityRegionsPostcodeRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *IntensityRegionsPostcodeRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
 	return nil

@@ -28,7 +28,7 @@ func NewGenerationMixRecentRequest(endpoint string) GenerationMixRecentRequest {
 	}
 }
 
-func (r *GenerationMixRecentRequest) GetEndpoint(args []string, flags map[string]string) {
+func (r *GenerationMixRecentRequest) GetEndpoint() {
 }
 
 func (r *GenerationMixRecentRequest) Get() ([]byte, error) {
@@ -36,17 +36,25 @@ func (r *GenerationMixRecentRequest) Get() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
-	return res, nil
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
+	}
+	return nil, err
 }
 
-func (r *GenerationMixRecentRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Schema, response)
+func (r *GenerationMixRecentRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
 }
 
-func (r *GenerationMixRecentRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *GenerationMixRecentRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
 	return nil
@@ -74,12 +82,12 @@ func NewGenerationMixRequest(endpoint string) GenerationMixIntervalRequest {
 	}
 }
 
-func (r *GenerationMixIntervalRequest) GetEndpoint(args []string, flags map[string]interface{}) {
+func (r *GenerationMixIntervalRequest) GetEndpoint(flags map[string]interface{}) {
 	if len(flags) > 0 {
 		if flags["past"] == true {
-			r.Endpoint = fmt.Sprintf("%v/%v/%v", r.Endpoint, flags["start-date"], "pt24h")
+			r.Endpoint = fmt.Sprintf("%v/%v/%v", &r.Endpoint, flags["start-date"], "pt24h")
 		} else if flags["start-date"] != "" {
-			r.Endpoint = fmt.Sprintf("%v/%v/%v", r.Endpoint, flags["start-date"], flags["end-date"])
+			r.Endpoint = fmt.Sprintf("%v/%v/%v", &r.Endpoint, flags["start-date"], flags["end-date"])
 		}
 	}
 }
@@ -89,17 +97,25 @@ func (r *GenerationMixIntervalRequest) Get() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%w", err)
 	}
-	return res, nil
+	valid := r.Validate(&res)
+	if valid {
+		err = r.UnMarshal(&res)
+		if err != nil {
+			return nil, err
+		}
+		return res, nil
+	}
+	return nil, err
 }
 
-func (r *GenerationMixIntervalRequest) Validate(response []byte) bool {
-	return req.ValidateResponse(r.Schema, response)
+func (r *GenerationMixIntervalRequest) Validate(response *[]byte) bool {
+	return req.ValidateResponse(r.Schema, *response)
 }
 
-func (r *GenerationMixIntervalRequest) UnMarshal(response []byte) error {
-	err := json.Unmarshal(response, &r.Response)
+func (r *GenerationMixIntervalRequest) UnMarshal(response *[]byte) error {
+	err := json.Unmarshal(*response, &r.Response)
 	if err != nil {
-		fmt.Println("Error:", err)
+		fmt.Println("Error:", &err)
 		return err
 	}
 	return nil

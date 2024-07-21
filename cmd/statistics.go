@@ -35,22 +35,14 @@ var statisticsCmd = &cobra.Command{
 			"end-date":   cmd.Flag("end-date").Value.String(),
 		}
 		request := s.NewIntensityIntervalRequest("intensity")
-		request.GetEndpoint(args, flagsValues)
-		result, err := request.Get()
+		(&request).GetEndpoint(flagsValues)
+		_, err := request.Get()
 		if err != nil {
 			fmt.Println("Error:")
-			fmt.Println(err)
+			fmt.Println(&err)
 			return
 		}
-		valid := request.Validate(result)
-		if !valid {
-			return
-		}
-		err = request.UnMarshal(result)
-		if err != nil {
-			return
-		}
-		fmt.Println(request.Response.Data)
+		fmt.Println(&request.Response.Data)
 	},
 }
 

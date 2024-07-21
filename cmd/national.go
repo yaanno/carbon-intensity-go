@@ -20,19 +20,11 @@ var nationalCmd = &cobra.Command{
 			cmd.Help()
 		} else {
 			request := s.NewIntensityRecentRequest("intensity")
-			request.GetEndpoint()
-			result, err := request.Get()
+			// request.GetEndpoint()
+			_, err := request.Get()
 			if err != nil {
 				fmt.Println("Error:")
 				fmt.Println(err)
-				return
-			}
-			valid := request.Validate(result)
-			if !valid {
-				return
-			}
-			err = request.UnMarshal(result)
-			if err != nil {
 				return
 			}
 			fmt.Println(request.Response.Data)
