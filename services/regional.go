@@ -79,7 +79,7 @@ func NewIntensityRegionsPostcodeRequest(endpoint string) IntensityRegionsPostcod
 }
 
 func (r *IntensityRegionsPostcodeRequest) GetEndpoint(postcode *string) {
-	r.Endpoint = fmt.Sprintf("%v/postcode/%v", &r.Endpoint, &postcode)
+	r.Endpoint = fmt.Sprintf("%v/postcode/%v", r.Endpoint, &postcode)
 }
 
 func (r *IntensityRegionsPostcodeRequest) Get() (*[]byte, error) {

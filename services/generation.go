@@ -85,9 +85,9 @@ func NewGenerationMixRequest(endpoint string) GenerationMixIntervalRequest {
 func (r *GenerationMixIntervalRequest) GetEndpoint(flags map[string]interface{}) {
 	if len(flags) > 0 {
 		if flags["past"] == true {
-			r.Endpoint = fmt.Sprintf("%v/%v/%v", &r.Endpoint, flags["start-date"], "pt24h")
+			r.Endpoint = fmt.Sprintf("%v/%v/%v", r.Endpoint, flags["start-date"], "pt24h")
 		} else if flags["start-date"] != "" {
-			r.Endpoint = fmt.Sprintf("%v/%v/%v", &r.Endpoint, flags["start-date"], flags["end-date"])
+			r.Endpoint = fmt.Sprintf("%v/%v/%v", r.Endpoint, flags["start-date"], flags["end-date"])
 		}
 	}
 }

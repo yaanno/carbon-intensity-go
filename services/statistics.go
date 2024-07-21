@@ -26,7 +26,7 @@ func NewIntensityIntervalRequest(endpoint string) IntensityIntervalRequest {
 
 func (r *IntensityIntervalRequest) GetEndpoint(flags map[string]string) {
 	if len(flags) > 0 {
-		r.Endpoint = fmt.Sprintf("%v/stats/%v/%v", &r.Endpoint, flags["start-date"], flags["end-date"])
+		r.Endpoint = fmt.Sprintf("%v/stats/%v/%v", r.Endpoint, flags["start-date"], flags["end-date"])
 	}
 }
 

@@ -25,7 +25,7 @@ func NewFactorsRequest(endpoint string) FactorsRequest {
 }
 
 func (r *FactorsRequest) GetEndpoint() {
-	r.Endpoint = fmt.Sprintf("%v/factors", &r.Endpoint)
+	r.Endpoint = fmt.Sprintf("%v/factors", r.Endpoint)
 }
 
 func (r *FactorsRequest) Get() ([]byte, error) {
